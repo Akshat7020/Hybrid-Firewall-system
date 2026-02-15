@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Firewall Control</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; }
+    .glow-green { box-shadow: 0 6px 30px rgba(34,197,94,0.12); }
+    .glow-red { box-shadow: 0 6px 30px rgba(239,68,68,0.12); }
+    .chip { padding: 0.25rem 0.6rem; border-radius: 9999px; font-weight:600; font-size:0.8125rem; }
+    .modal-backdrop { background: rgba(2,6,23,0.6); backdrop-filter: blur(4px); }
+    .toast { min-width: 220px; padding: 0.6rem 0.9rem; border-radius: 0.5rem; box-shadow: 0 6px 24px rgba(2,6,23,0.6); }
+    .switch { width:52px; height:28px; border-radius:9999px; padding:3px; display:inline-flex; align-items:center; cursor:pointer; }
+    .switch-knob { width:22px; height:22px; background:white; border-radius:9999px; transition:transform .18s cubic-bezier(.4,0,.2,1); }
+    @keyframes pulse { 0%,100% {opacity:1} 50%{opacity:0.6} }
+  </style>
+</head>
+<body class="bg-zinc-950 text-zinc-200 font-mono">
+  <div class="max-w-5xl mx-auto p-8">
+    <header class="flex items-center justify-between mb-8">
+      <div class="flex items-center gap-4">
+        <div class="bg-gradient-to-tr from-emerald-400 to-sky-400 p-2 rounded-lg shadow-md">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L2 7v6c0 5 5 9 10 9s10-4 10-9V7l-10-5z" fill="#06202A"/><path d="M12 6l5.5 2.75v4.25C17.5 14.75 15 16 12 16s-5.5-1.25-5.5-3v-4.25L12 6z" fill="#22c55e"/></svg>
+        </div>
+        <div>
+          <h1 class="text-3xl font-extrabold">Firewall Control</h1>
+          <div class="text-sm text-zinc-300 mt-0.5">Manage agents securely and efficiently</div>
+        </div>
+      </div>
+      <div class="text-sm text-zinc-300">Backend: <span class="font-mono text-xs text-zinc-200">http://10.65.42.253:5000</span></div>
+    </header>
+
+    <section id="auth-panel" class="mb-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div id="login-form" class="bg-zinc-900/60 border border-zinc-800 rounded-2xl p-6 shadow-lg">
+          <div class="flex items-center justify-between mb-4">
+            <div class="text-lg font-semibold">Sign in</div>
+            <div class="text-sm text-zinc-400">Secure access</div>
+          </div>
+          <div class="space-y-3">
+            <label class="block text-zinc-300 text-sm">User ID</label>
+            <div class="relative">
+              <input id="input-user" class="w-full bg-transparent border border-zinc-800 rounded px-3 py-2 placeholder:text-zinc-400" placeholder="Paste user id" />
+              <div class="absolute right-3 top-2 text-zinc-500 text-xs">🔑</div>
+            </div>
+            <label class="block text-zinc-300 text-sm">Token</label>
+            <div class="relative">
+              <input id="input-token" class="w-full bg-transparent border border-zinc-800 rounded px-3 py-2 placeholder:text-zinc-400" placeholder="Paste token" />
+              <div class="absolute right-3 top-2 text-zinc-500 text-xs">🔒</div>
+            </div>
+            <div class="flex items-center gap-3">
+              <button id="login-btn" class="bg-emerald-500 hover:bg-emerald-600 px-4 py-2 rounded-lg font-semibold text-zinc-900 shadow">Sign in</button>
+              <button id="clear-btn" class="bg-zinc-800 px-3 py-2 rounded text-zinc-300">Clear</button>
+              <div class="ml-auto text-sm text-zinc-400 flex items-center gap-3">
+                <label class="flex items-center gap-2"><input type="checkbox" id="hide-duplicates" /> Hide duplicates</label>
+              </div>
+            </div>
+            <div id="login-help" class="text-xs text-zinc-400">Keep your token private. Use <code>install_firewall_agent.ps1</code> to obtain credentials. To access the <strong>Admin Panel</strong>, sign in with the admin User ID and admin token provided by your organization.</div>
+          </div>
+        </div>
+
+        <div id="installer-card" class="bg-zinc-900/40 border border-zinc-800 rounded-2xl p-6 shadow-lg">
+          <div class="flex items-start gap-4">
+            <div class="flex-1">
+              <div class="text-lg font-semibold">Installer & Setup</div>
+              <div class="text-sm text-zinc-400 mt-1">Quick steps to install the agent. You may download the installer without signing in — running it will create and save a `user_id` and `user_token` on your machine so you can sign in afterward.</div>
+
+              <div class="mt-3 text-sm text-zinc-300">
+                <div class="mb-2">Preferred Firewall:</div>
+                <div class="flex items-center gap-4">
+                  <label class="flex items-center gap-2"><input type="radio" name="pref_fw" value="windows" checked /> Windows</label>
+                  <label class="flex items-center gap-2"><input type="radio" name="pref_fw" value="linux" /> Linux</label>
+                  <button id="set-pref-btn" class="bg-emerald-500 px-3 py-1 rounded text-zinc-900 font-semibold">Set selection</button>
+                </div>
+                <div class="mt-3 text-xs text-zinc-400">Once set, the backend will remember your preference and the installer will validate it against the machine OS.</div>
+
+                <div class="mt-4 flex gap-3">
+                  <button id="download-installer" class="bg-sky-600 px-4 py-2 rounded-lg font-semibold text-white">Download Installer</button>
+                  <button id="install-instructions" class="text-sm underline text-zinc-300">Show command to install</button>
+                </div>
+
+                <div id="installer-note" class="mt-3 text-xs text-zinc-400 hidden"></div>
+                <div id="installer-public-note" class="mt-2 text-xs text-amber-300 hidden">The installer will create a new User ID and Token on your first run and save them locally (user_id.txt, user_token.txt). After install, use these credentials to sign in to the web UI.</div>
+              </div>
+            </div>
+            <div class="w-32 flex items-center justify-center opacity-80">
+              <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L2 7v6c0 5 5 9 10 9s10-4 10-9V7l-10-5z" fill="#0e7490"/><path d="M7 11l5 4 5-4" stroke="#22c55e" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+          <div id="installer-steps" class="mt-4 text-sm text-zinc-300 hidden">
+            <pre class="bg-zinc-900 p-3 rounded text-xs overflow-auto">Set-ExecutionPolicy Bypass -Scope Process -Force; .\install_firewall_agent.ps1</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      document.getElementById('show-installer-steps').addEventListener('click', (e) => {
+        e.preventDefault();
+        const el = document.getElementById('installer-steps');
+        el.classList.toggle('hidden');
+        document.getElementById('show-installer-steps').textContent = el.classList.contains('hidden') ? 'How to run installer' : 'Hide steps';
+      });
+    </script>
+
+    <div id="auth-controls" class="hidden mt-4 flex items-center gap-3">
+      <div class="text-sm text-zinc-400">Signed in as <span id="auth-user-display" class="font-semibold"></span></div>
+      <button id="logout-btn" class="bg-red-600 px-3 py-1 rounded text-white">Logout</button>
+      <div class="text-xs text-zinc-400">Auto-refresh every 5s • <span id="status-text">Not authenticated</span></div>
+    </div>
+
+    <!-- Admin panel (admin-only) -->
+    <section id="admin-panel" class="hidden mt-6 bg-zinc-900/50 border border-zinc-800 rounded-2xl p-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <div class="text-sm font-semibold text-zinc-200">Admin Panel</div>
+          <div class="text-xs text-zinc-400">Only users with admin credentials can use these controls</div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button id="admin-refresh-users" class="bg-sky-600 hover:bg-sky-700 px-3 py-1 rounded text-white text-sm">Load users</button>
+        </div>
+      </div>
+      <div id="admin-users" class="mt-4 grid gap-3"></div>
+    </section>
+
+    <div id="agents-list" class="space-y-6"></div>
+
+    <div id="status-line" class="text-center text-zinc-600 mt-12 text-sm">
+      Auto-refresh every 5 seconds • <span id="status-text">Not authenticated</span>
+    </div> 
+  </div>
+
+  <script>
+    const API_BASE = "http://10.65.42.253:5000";
+    let USER_ID = localStorage.getItem('user_id') || null;
+    let USER_TOKEN = localStorage.getItem('user_token') || null;
+
+    // Simple toast helper
+    function toast(text, kind='info'){
+      const el = document.createElement('div');
+      el.className = 'toast '+ (kind==='error'? 'bg-red-600 text-white' : 'bg-zinc-800 text-zinc-100');
+      el.textContent = text;
+      document.body.appendChild(el);
+      el.style.position = 'fixed'; el.style.right = '24px'; el.style.bottom = (24 + (document.querySelectorAll('.toast').length*56)) + 'px'; el.style.zIndex = 9999;
+      setTimeout(()=>{ el.style.opacity = '0'; setTimeout(()=>el.remove(),400); }, 3000);
+    }
+
+    // Modal confirmation helper - creates and reuses a simple modal
+    async function showConfirmModal(title, body){
+      let modal = document.getElementById('confirm-modal');
+      if (!modal){
+        modal = document.createElement('div'); modal.id = 'confirm-modal';
+        modal.className = 'fixed inset-0 hidden items-center justify-center modal-backdrop z-50';
+        modal.innerHTML = `<div class="bg-zinc-900 rounded-2xl p-6 w-full max-w-md"><h3 id="confirm-modal-title" class="text-lg font-semibold"></h3><p id="confirm-modal-body" class="text-sm text-zinc-300 mt-2"></p><div class="mt-4 flex gap-3 justify-end"><button id="confirm-modal-cancel" class="px-4 py-2 rounded bg-zinc-800">Cancel</button><button id="confirm-modal-confirm" class="px-4 py-2 rounded bg-emerald-500 font-semibold text-zinc-900">Confirm</button></div></div>`;
+        document.body.appendChild(modal);
+      }
+      document.getElementById('confirm-modal-title').textContent = title;
+      document.getElementById('confirm-modal-body').textContent = body;
+      modal.classList.remove('hidden'); modal.classList.add('flex');
+      return await new Promise((resolve)=>{
+        const onCancel = () => { cleanup(); resolve(false); };
+        const onConfirm = () => { cleanup(); resolve(true); };
+        function cleanup(){ modal.classList.add('hidden'); modal.classList.remove('flex'); document.getElementById('confirm-modal-cancel').removeEventListener('click', onCancel); document.getElementById('confirm-modal-confirm').removeEventListener('click', onConfirm); }
+        document.getElementById('confirm-modal-cancel').addEventListener('click', onCancel);
+        document.getElementById('confirm-modal-confirm').addEventListener('click', onConfirm);
+      });
+    }
+
+    function setAuth(user, token) {
+      USER_ID = user;
+      USER_TOKEN = token;
+      const authControls = document.getElementById('auth-controls');
+      const adminPanel = document.getElementById('admin-panel');
+      const installerCard = document.getElementById('installer-card');
+      if (user && token) {
+        localStorage.setItem('user_id', user);
+        localStorage.setItem('user_token', token);
+        document.getElementById('status-text').textContent = `Authenticated • ${user.substring(0,8)}...`;
+        document.getElementById('login-form').style.display = 'none';
+        if (authControls) { authControls.classList.remove('hidden'); document.getElementById('auth-user-display').textContent = user; }
+        // Show admin panel only for admin user id (backend should validate permissions too)
+        if (adminPanel) { if (user === 'admin') { adminPanel.classList.remove('hidden'); try{ loadAdminUsers(); }catch(e){} } else { adminPanel.classList.add('hidden'); } }
+        if (installerCard) { installerCard.classList.add('hidden'); }
+      } else {
+        localStorage.removeItem('user_id');
+        localStorage.removeItem('user_token');
+        USER_ID = null; USER_TOKEN = null;
+        document.getElementById('status-text').textContent = 'Not authenticated';
+        document.getElementById('login-form').style.display = '';
+        if (authControls) { authControls.classList.add('hidden'); document.getElementById('auth-user-display').textContent = ''; }
+        if (adminPanel) { adminPanel.classList.add('hidden'); }
+        if (installerCard) { installerCard.classList.remove('hidden'); }
+      }
+    }
+
+    document.getElementById('login-btn').addEventListener('click', () => {
+      const u = document.getElementById('input-user').value.trim();
+      const t = document.getElementById('input-token').value.trim();
+      if (!u || !t) { toast('Please provide both User ID and Token', 'error'); return; }
+      setAuth(u, t);
+      refresh();
+      toast('Signed in');
+    });
+
+    // Logout button (use modal)
+    document.getElementById('logout-btn').addEventListener('click', async () => {
+      if (await showConfirmModal('Log out', 'Are you sure you want to sign out?')) { setAuth(null, null); refresh(); toast('Signed out'); }
+    });
+
+    // Hide duplicate devices checkbox
+    const hideDupEl = document.getElementById('hide-duplicates');
+    hideDupEl.checked = localStorage.getItem('hide_duplicates') === '1';
+    hideDupEl.addEventListener('change', () => {
+      localStorage.setItem('hide_duplicates', hideDupEl.checked ? '1' : '0');
+      refresh();
+    });
+
+    // Initialize UI based on stored creds
+    if (USER_ID && USER_TOKEN) {
+      document.getElementById('input-user').value = USER_ID;
+      document.getElementById('input-token').value = USER_TOKEN;
+      setAuth(USER_ID, USER_TOKEN);
+    }
+
+    // --- Admin functions: fetch users and delete a user (admin-only) ---
+    async function loadAdminUsers(){
+      if (!USER_ID || !USER_TOKEN){ toast('Not authenticated','error'); return; }
+      if (USER_ID !== 'admin'){ toast('Admin access only', 'error'); return; }
+      const container = document.getElementById('admin-users');
+      container.innerHTML = `<div class="text-sm text-zinc-400">Loading users...</div>`;
+      try{
+        const res = await fetch(`${API_BASE}/api/admin/users?user_id=${encodeURIComponent(USER_ID)}&token=${encodeURIComponent(USER_TOKEN)}`);
+        if (!res.ok){ toast('Failed to load users', 'error'); container.innerHTML=''; return; }
+        const users = await res.json();
+        if (!Array.isArray(users) || users.length === 0){ container.innerHTML = `<div class="text-sm text-zinc-400">No users found</div>`; return; }
+        container.innerHTML = users.map(u => {
+          const lastAct = u.last_action || '—';
+          const activated = u.last_activated ? `Last activated: ${new Date(u.last_activated*1000).toLocaleString()}` : '';
+          // data-user attribute used for attaching listeners
+          return `<div class="bg-zinc-900/40 border border-zinc-800 rounded p-3">
+                    <div class="flex items-center justify-between">
+                      <div><div class="font-semibold">${u.user_id}</div><div class="text-xs text-zinc-400">${lastAct} ${activated}</div></div>
+                      <div class="flex gap-2">
+                        <button class="view-agents bg-sky-600 px-3 py-1 rounded text-sm text-white" data-user="${u.user_id}">View agents</button>
+                        <button class="delete-user bg-red-600 px-3 py-1 rounded text-sm text-white" data-user="${u.user_id}">Delete</button>
+                      </div>
+                    </div>
+                    <div class="mt-2 admin-agents" data-user="${u.user_id}"></div>
+                  </div>`;
+        }).join('\n');
+
+        // Attach listeners
+        container.querySelectorAll('.view-agents').forEach(btn => btn.addEventListener('click', (e)=>{ const u = btn.dataset.user; loadAdminUserAgents(u); }));
+        container.querySelectorAll('.delete-user').forEach(btn => btn.addEventListener('click', (e)=>{ const u = btn.dataset.user; deleteUser(u); }));
+
+      }catch(e){ console.error(e); container.innerHTML=''; toast('Network error','error'); }
+    }
+
+    async function deleteUser(targetUser){
+      if (!USER_ID || USER_ID !== 'admin'){ toast('Admin access only','error'); return; }
+      const ok = await showConfirmModal('Delete user', `Delete ${targetUser}? This operation cannot be undone.`);
+      if (!ok) return;
+      try{
+        const res = await fetch(`${API_BASE}/api/admin/users/delete`, {
+          method: 'POST', headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ user_id: USER_ID, token: USER_TOKEN, target_user: targetUser })
+        });
+        if (res.ok){ toast('User deleted'); loadAdminUsers(); } else { const text = await res.text(); toast('Failed: '+text,'error'); }
+      }catch(e){ toast('Network error','error'); }
+    }
+
+    // Load agents for a given user (admin view)
+    async function loadAdminUserAgents(targetUser){
+      if (!USER_ID || USER_ID !== 'admin'){ toast('Admin access only','error'); return; }
+      const holders = document.querySelectorAll('.admin-agents');
+      const holder = Array.from(holders).find(h => h.dataset.user === targetUser);
+      if (!holder) { toast('UI element not found for user','error'); return; }
+      holder.innerHTML = `<div class="text-sm text-zinc-400">Loading agents...</div>`;
+      try{
+        const res = await fetch(`${API_BASE}/api/admin/user/agents?user_id=${encodeURIComponent(USER_ID)}&token=${encodeURIComponent(USER_TOKEN)}&target_user=${encodeURIComponent(targetUser)}`);
+        if (!res.ok){ const t = await res.text(); holder.innerHTML = `<div class="text-sm text-red-400">Failed: ${t}</div>`; return; }
+        const agents = await res.json();
+        if (!Array.isArray(agents) || agents.length === 0){ holder.innerHTML = `<div class="text-sm text-zinc-400">No agents for ${targetUser}</div>`; return; }
+        holder.innerHTML = agents.map(a => {
+          const lastHb = a.last_heartbeat ? new Date(a.last_heartbeat * 1000).toLocaleString() : '—';
+          const lastChange = a.last_toggle ? new Date(a.last_toggle * 1000).toLocaleString() : '—';
+          const lastActor = a.last_actor || '—';
+          return `<div class="bg-zinc-900/60 border border-zinc-800 rounded p-3 flex items-center justify-between"><div><div class="font-semibold text-sm">${a.agent_id}</div><div class="text-xs text-zinc-400">${a.os} • Last: ${lastHb} • ${lastChange} by ${lastActor}</div></div><div><button class="admin-delete-agent bg-red-600 px-3 py-1 rounded text-sm text-white" data-user="${targetUser}" data-agent="${a.agent_id}">Delete agent</button></div></div>`;
+        }).join('\n');
+        // attach delete listeners
+        holder.querySelectorAll('.admin-delete-agent').forEach(b => b.addEventListener('click', (e)=>{ const user = b.dataset.user; const agent = b.dataset.agent; adminDeleteAgent(user, agent); }));
+      }catch(e){ console.error(e); holder.innerHTML = `<div class="text-sm text-red-400">Network error</div>`; }
+    }
+
+    async function adminDeleteAgent(targetUser, agentId){
+      if (!USER_ID || USER_ID !== 'admin'){ toast('Admin access only','error'); return; }
+      const ok = await showConfirmModal('Delete agent', `Delete agent ${agentId} for ${targetUser}?`);
+      if (!ok) return;
+      try{
+        const res = await fetch(`${API_BASE}/api/admin/agent/delete`, {
+          method: 'POST', headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ user_id: USER_ID, token: USER_TOKEN, target_user: targetUser, agent_id: agentId })
+        });
+        if (res.ok){ const json = await res.json(); toast('Agent deleted'); if (json.user_deleted) { loadAdminUsers(); } else { loadAdminUserAgents(targetUser); } }
+        else { const t = await res.text(); toast('Failed: '+t,'error'); }
+      }catch(e){ toast('Network error','error'); }
+    }
+
+    // Attach admin UI events
+    const adminRefreshBtn = document.getElementById('admin-refresh-users');
+    if (adminRefreshBtn) adminRefreshBtn.addEventListener('click', loadAdminUsers);
+
+
+
+
+    async function refresh() {
+      if (!USER_ID || !USER_TOKEN) { document.getElementById('agents-list').innerHTML = `<div class="bg-zinc-900 p-12 rounded-2xl text-center text-zinc-500">Please login with your User ID and Token</div>`; return; }
+      try {
+        const res = await fetch(`${API_BASE}/api/user/agents?user_id=${encodeURIComponent(USER_ID)}&token=${encodeURIComponent(USER_TOKEN)}`);
+        if (res.status === 403) { setAuth(null, null); toast('Authentication failed: invalid token', 'error'); return; }
+        let agents = await res.json();
+
+        // Optionally hide duplicate devices (same agent_id prefix) keeping the most recently active one
+        if (localStorage.getItem('hide_duplicates') === '1' && Array.isArray(agents) && agents.length > 1) {
+          const map = new Map();
+          agents.forEach(a => {
+            const key = a.agent_id ? a.agent_id.substring(0,12) : a.agent_id || '__unknown__';
+            const prev = map.get(key);
+            const curScore = a.last_heartbeat || 0;
+            const prevScore = prev ? (prev.last_heartbeat || 0) : -1;
+            if (!prev || curScore >= prevScore) map.set(key, a);
+          });
+          agents = Array.from(map.values()).sort((x,y) => (y.last_heartbeat||0) - (x.last_heartbeat||0));
+        }
+
+        let html = "";
+        agents.forEach(agent => {
+          const isOnline = agent.connected;
+          const status = agent.firewall || "UNKNOWN";
+          const lastHb = agent.last_heartbeat ? new Date(agent.last_heartbeat * 1000).toLocaleTimeString() : "—";
+          const lastChange = agent.last_toggle ? new Date(agent.last_toggle * 1000).toLocaleString() : "—";
+          const lastActor = agent.last_actor || agent.toggled_by || '—';
+
+          const btnText = status === "ACTIVE" ? "DEACTIVATE" : "ACTIVATE";
+          const btnClass = status === "ACTIVE" 
+            ? "bg-red-600 hover:bg-red-700" 
+            : "bg-emerald-600 hover:bg-emerald-700";
+
+          html += `
+            <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-6">
+              <div class="flex justify-between items-start">
+                <div>
+                  <div class="flex items-center gap-3">
+                    <div class="${isOnline ? 'bg-emerald-500' : 'bg-red-500'} w-3 h-3 rounded-full"></div>
+                    <div class="font-semibold text-lg">${agent.agent_id.substring(0, 8)}...</div>
+                    <div class="text-zinc-500 text-sm">(${agent.os})</div>
+                  </div>
+                  <div class="mt-1 text-zinc-400">Last heartbeat: ${lastHb}</div>
+                  <div class="text-zinc-400">Last change: ${lastChange} <span class="text-zinc-300">by ${lastActor}</span></div>
+                </div>
+                
+                <div class="text-right">
+                  <div class="text-sm text-zinc-500">Firewall</div>
+                  <div class="text-2xl font-bold ${status === 'ACTIVE' ? 'text-emerald-400' : 'text-red-400'}">
+                    ${status}
+                  </div>
+                </div>
+              </div>
+
+              <button onclick="toggleFirewall('${agent.agent_id}', '${status}')" 
+                class="${btnClass} mt-5 w-full py-4 rounded-lg font-semibold text-white transition-colors">
+                ${btnText}
+              </button>
+            </div>
+          `;
+        });
+
+        if (agents.length === 0) {
+          html = `<div class="bg-zinc-900 p-12 rounded-2xl text-center text-zinc-500">No agents registered yet</div>`;
+        }
+
+        document.getElementById("agents-list").innerHTML = html;
+      } catch (e) {
+        console.error(e);
+        document.getElementById("agents-list").innerHTML = `<div class="text-red-400">Connection error to backend</div>`;
+      }
+    }
+
+    async function toggleFirewall(agentId, currentState) {
+      if (!USER_ID || !USER_TOKEN){ toast('Not authenticated','error'); return; }
+      const cmd = currentState === "ACTIVE" ? "DEACTIVATE" : "ACTIVATE";
+      const ok = await showConfirmModal(`${cmd} firewall`, `Send ${cmd} to ${agentId.substring(0,8)}?`);
+      if (!ok) return;
+      try {
+        const res = await fetch(`${API_BASE}/api/user/firewall`, {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({ user_id: USER_ID, token: USER_TOKEN, agent_id: agentId, cmd: cmd })
+        });
+        if (res.ok){ toast('Command sent'); setTimeout(refresh, 800); } else { toast('Failed to send command', 'error'); }
+      } catch (e){ toast('Network error', 'error'); }
+    }
+
+    setInterval(refresh, 5000);
+
+    // --- Installer select & download handlers ---
+    function getClientOS() {
+      const p = (navigator.platform || navigator.userAgent || '').toLowerCase();
+      if (p.indexOf('win') !== -1) return 'windows';
+      if (p.indexOf('linux') !== -1 || p.indexOf('mac') !== -1 || p.indexOf('darwin') !== -1) return 'linux';
+      return 'unknown';
+    }
+
+    async function setPreferredFirewall() {
+      if (!USER_ID || !USER_TOKEN) { toast('Sign in to set preference', 'error'); return; }
+      const sel = document.querySelector('input[name="pref_fw"]:checked').value;
+      try{
+        const res = await fetch(`${API_BASE}/api/user/firewall/select`, {
+          method: 'POST', headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ user_id: USER_ID, token: USER_TOKEN, selection: sel })
+        });
+        const j = await res.json();
+        if (!res.ok) { toast('Failed to set preference: '+(j.error||res.statusText),'error'); return; }
+        toast('Preference saved: '+j.selection);
+      }catch(e){ toast('Network error','error'); }
+    }
+
+    document.getElementById('set-pref-btn').addEventListener('click', setPreferredFirewall);
+
+    async function downloadInstaller() {
+      const sel = document.querySelector('input[name="pref_fw"]:checked').value;
+      const client = getClientOS();
+      if (sel === 'windows' && client !== 'windows') { toast('You selected Windows but this browser is on '+client+'. Use a Windows machine to download and run the installer','error'); return; }
+      if (!USER_ID || !USER_TOKEN) { toast('Sign in to download installer (frontend will provide the appropriate script)', 'error'); return; }
+      // Initiate download (backend returns file attachment)
+      const url = `${API_BASE}/api/user/firewall/download?user_id=${encodeURIComponent(USER_ID)}&token=${encodeURIComponent(USER_TOKEN)}&os=${encodeURIComponent(sel)}`;
+      window.location = url; // trigger download
+    }
+    // Single public download that returns a prepackaged ZIP for the selected OS
+    document.getElementById('download-installer').addEventListener('click', () => {
+      const sel = document.querySelector('input[name="pref_fw"]:checked').value;
+      const url = `${API_BASE}/api/public/installer/zip?os=${encodeURIComponent(sel)}`;
+      // Trigger browser download
+      window.location = url;
+      // Show note about local credentials created on install
+      document.getElementById('installer-public-note').classList.remove('hidden');
+      toast('Download started. Run installer on the target machine to generate your user_id and token.');
+    });
+
+    // Update button label when OS preference changes (clarity for users)
+    document.querySelectorAll('input[name="pref_fw"]').forEach(r => r.addEventListener('change', (e) => {
+      const sel = document.querySelector('input[name="pref_fw"]:checked').value;
+      const btn = document.getElementById('download-installer');
+      btn.textContent = `Download ${sel.charAt(0).toUpperCase() + sel.slice(1)} installer`;
+    }));
+
+    // Initialize button label
+    (function(){ const sel = document.querySelector('input[name="pref_fw"]:checked').value; document.getElementById('download-installer').textContent = `Download ${sel.charAt(0).toUpperCase() + sel.slice(1)} installer`; })();
+
+    document.getElementById('install-instructions').addEventListener('click', (e)=>{
+      const sel = document.querySelector('input[name="pref_fw"]:checked').value;
+      const client = getClientOS();
+      const el = document.getElementById('installer-note');
+      el.classList.remove('hidden');
+      if (sel === 'windows') {
+        el.textContent = 'Download the PowerShell installer and run (recommended): Set-ExecutionPolicy Bypass -Scope Process -Force; .\\install_firewall_agent_cross.ps1 -BackendUrl <backend> -UserId <optional_user_id>';
+        if (client !== 'windows') { el.textContent += ' (Note: you are not on Windows)'; }
+      } else {
+        el.textContent = 'Download the Linux installer and run: python3 install_firewall_agent.py --backend <backend> --user-id <optional_user_id>'; if (client !== 'linux') { el.textContent += ' (Note: you are not on Linux)'; }
+        // Inform about public installer behaviour
+        document.getElementById('installer-public-note').classList.remove('hidden');
+      }
+    });
+
+    // When signing in, fetch and highlight current preference
+    async function refreshPreference() {
+      if (!USER_ID || !USER_TOKEN) return;
+      try{
+        const res = await fetch(`${API_BASE}/api/user/firewall/selection?user_id=${encodeURIComponent(USER_ID)}&token=${encodeURIComponent(USER_TOKEN)}`);
+        if (!res.ok) return;
+        const j = await res.json();
+        if (j.selection) {
+          const el = document.querySelector(`input[name="pref_fw"][value="${j.selection}"]`);
+          if (el) el.checked = true;
+        }
+      }catch(e){}
+    }
+
+    // Hook refreshPreference in login flow
+    const origSetAuth = setAuth;
+    setAuth = function(user, token){ origSetAuth(user, token); refreshPreference(); };
+
+
+    refresh();
+  </script>
+</body>
+</html>

@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enterprise Firewall Control Center</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * { font-family: 'Sora', system-ui, sans-serif; }
+    body { background: linear-gradient(135deg, #0f172a 0%, #1a1f35 50%, #0f1419 100%); min-height: 100vh; }
+    .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+    .gradient-btn { background: linear-gradient(135deg, #10b981 0%, #0891b2 100%); transition: all 0.3s; }
+    .gradient-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3); }
+    .danger-btn { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); transition: all 0.3s; }
+    .danger-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(239, 68, 68, 0.3); }
+    .status-active { color: #10b981; text-shadow: 0 0 10px rgba(16, 185, 129, 0.5); }
+    .status-inactive { color: #f87171; text-shadow: 0 0 10px rgba(248, 113, 113, 0.5); }
+    .card-hover { transition: all 0.3s; } .card-hover:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+    .tab-active { border-bottom: 2px solid #10b981; color: #10b981; }
+    .pulse-dot { animation: pulse 2s infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+    .toast { animation: slideIn 0.3s ease-out; }
+    @keyframes slideIn { from { transform: translateX(400px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+  </style>
+</head>
+<body class="text-gray-100">
+  <!-- Navigation Bar -->
+  <nav class="glass border-b border-gray-800 sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="bg-gradient-to-r from-emerald-400 to-cyan-400 p-2 rounded-lg">
+          <i class="fas fa-shield-alt text-gray-900 text-xl"></i>
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold">Firewall Control</h1>
+          <p class="text-xs text-gray-400">Enterprise Firewall Management Center</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-6">
+        <div class="text-sm text-gray-400" id="auth-status">Not authenticated</div>
+        <button id="logout-btn" class="hidden px-4 py-2 rounded-lg bg-red-600/20 text-red-400 hover:bg-red-600/30 border border-red-600/50">Logout</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <div class="max-w-7xl mx-auto px-6 py-8">
+    
+    <!-- Tab Navigation -->
+    <div class="flex gap-8 mb-8 border-b border-gray-800 pb-4" id="tab-nav">
+      <button class="tab-btn tab-active text-sm font-semibold" data-tab="agents">
+        <i class="fas fa-desktop mr-2"></i>Agents
+      </button>
+      <button class="tab-btn text-sm font-semibold" data-tab="install">
+        <i class="fas fa-download mr-2"></i>Installation
+      </button>
+      <button class="tab-btn text-sm font-semibold" data-tab="admin">
+        <i class="fas fa-lock mr-2"></i>Admin
+      </button>
+    </div>
+
+    <!-- AGENTS TAB -->
+    <div id="agents-tab" class="tab-content">
+      <!-- Auth Section -->
+      <div id="auth-section" class="mb-8">
+        <div class="glass rounded-xl p-8 border border-gray-700">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Login Form -->
+            <div>
+              <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
+                <i class="fas fa-sign-in-alt text-emerald-400"></i>Sign In
+              </h2>
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-sm text-gray-300 mb-2">User ID</label>
+                  <div class="relative">
+                    <input id="input-user" class="w-full bg-gray-900/50 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-emerald-500 transition" placeholder="Enter your User ID" />
+                    <i class="fas fa-key absolute right-4 top-3.5 text-gray-500"></i>
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-sm text-gray-300 mb-2">Access Token</label>
+                  <div class="relative">
+                    <input id="input-token" type="password" class="w-full bg-gray-900/50 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-emerald-500 transition" placeholder="Paste your access token" />
+                    <i class="fas fa-lock absolute right-4 top-3.5 text-gray-500"></i>
+                  </div>
+                </div>
+                <div class="flex gap-3">
+                  <button id="login-btn" class="gradient-btn px-6 py-2 rounded-lg font-semibold text-gray-900 flex-1">Sign In</button>
+                  <button id="clear-btn" class="px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 border border-gray-700">Clear</button>
+                </div>
+                <label class="flex items-center gap-2 text-sm text-gray-400">
+                  <input type="checkbox" id="hide-duplicates" />
+                  Hide duplicate agents
+                </label>
+              </div>
+            </div>
+
+            <!-- Setup Info -->
+            <div class="bg-gradient-to-br from-emerald-900/20 to-cyan-900/20 rounded-lg p-6 border border-emerald-700/50">
+              <h3 class="font-bold mb-3 flex items-center gap-2 text-emerald-300">
+                <i class="fas fa-info-circle"></i>First Time?
+              </h3>
+              <p class="text-sm text-gray-300 mb-4">
+                Go to the <strong>Installation tab</strong> to download and run the agent installer. The installer will generate your credentials automatically.
+              </p>
+              <div class="bg-gray-900/50 rounded p-3 text-xs text-gray-400 border-l-2 border-emerald-500">
+                <strong>Keep your token private</strong> — It provides full access to your agents. Share only with authorized team members.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Agents List -->
+      <div id="agents-list" class="space-y-6"></div>
+      
+      <div id="no-auth-message" class="glass rounded-xl p-12 text-center border border-gray-700">
+        <i class="fas fa-lock text-4xl text-gray-500 mb-4 block"></i>
+        <p class="text-gray-400">Please sign in to view your agents</p>
+      </div>
+    </div>
+
+    <!-- INSTALLATION TAB -->
+    <div id="install-tab" class="tab-content hidden">
+      <div class="space-y-6">
+        <!-- Firewall Selection -->
+        <div class="glass rounded-xl p-8 border border-gray-700">
+          <h2 class="text-lg font-bold mb-6 flex items-center gap-2">
+            <i class="fas fa-cogs text-emerald-400"></i>Choose Your Operating System
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <label class="glass rounded-lg p-4 cursor-pointer border-2 border-gray-700 hover:border-emerald-500 transition flex items-center gap-3">
+              <input type="radio" name="pref_fw" value="windows" checked />
+              <i class="fas fa-windows text-2xl text-blue-400"></i>
+              <div>
+                <div class="font-bold">Windows</div>
+                <div class="text-xs text-gray-400">PowerShell Script</div>
+              </div>
+            </label>
+            <label class="glass rounded-lg p-4 cursor-pointer border-2 border-gray-700 hover:border-emerald-500 transition flex items-center gap-3">
+              <input type="radio" name="pref_fw" value="linux" />
+              <i class="fas fa-linux text-2xl text-orange-400"></i>
+              <div>
+                <div class="font-bold">Linux</div>
+                <div class="text-xs text-gray-400">Python Script</div>
+              </div>
+            </label>
+          </div>
+          <div class="flex gap-3">
+            <button id="download-installer" class="gradient-btn px-6 py-3 rounded-lg font-semibold text-gray-900 flex items-center gap-2">
+              <i class="fas fa-download"></i>Download Installer
+            </button>
+            <button id="show-instructions" class="px-6 py-3 rounded-lg border border-gray-700 hover:border-emerald-500 transition">
+              <i class="fas fa-terminal mr-2"></i>Show Command
+            </button>
+          </div>
+        </div>
+
+        <!-- Commands Display -->
+        <div id="commands-display" class="hidden glass rounded-xl p-8 border border-gray-700">
+          <h3 class="font-bold mb-4 flex items-center gap-2">
+            <i class="fas fa-terminal text-cyan-400"></i>Installation Command
+          </h3>
+          <div id="command-box" class="bg-gray-900 rounded-lg p-4 border border-gray-800 font-mono text-sm overflow-x-auto"></div>
+          <button id="copy-command" class="mt-4 px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-sm flex items-center gap-2">
+            <i class="fas fa-copy"></i>Copy Command
+          </button>
+        </div>
+
+        <!-- Installation Steps -->
+        <div class="glass rounded-xl p-8 border border-gray-700">
+          <h2 class="text-lg font-bold mb-6 flex items-center gap-2">
+            <i class="fas fa-list-ol text-emerald-400"></i>Installation Steps
+          </h2>
+          <div class="space-y-6">
+            <!-- Step 1 -->
+            <div class="flex gap-4">
+              <div class="flex-shrink-0">
+                <div class="flex items-center justify-center h-10 w-10 rounded-full bg-emerald-500/20 border border-emerald-500">
+                  <span class="text-emerald-400 font-bold">1</span>
+                </div>
+              </div>
+              <div>
+                <h3 class="font-bold text-emerald-300 mb-2">Download the Installer</h3>
+                <p class="text-gray-400 text-sm mb-3">
+                  Click the "Download Installer" button above to get the appropriate script for your OS.
+                </p>
+                <div class="bg-gray-900/50 rounded p-3 text-xs text-gray-400 border-l-2 border-emerald-500">
+                  <strong>Note:</strong> You don't need credentials to download — they'll be created automatically on first run.
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="flex gap-4">
+              <div class="flex-shrink-0">
+                <div class="flex items-center justify-center h-10 w-10 rounded-full bg-emerald-500/20 border border-emerald-500">
+                  <span class="text-emerald-400 font-bold">2</span>
+                </div>
+              </div>
+              <div>
+                <h3 class="font-bold text-emerald-300 mb-2">Run on Target Machine</h3>
+                <p class="text-gray-400 text-sm mb-3">
+                  <strong>On Windows:</strong> Open PowerShell as Administrator and paste the command shown above.
+                </p>
+                <p class="text-gray-400 text-sm mb-3">
+                  <strong>On Linux:</strong> Open terminal and run the command with sudo if needed.
+                </p>
+                <div class="bg-gray-900/50 rounded p-3 text-xs text-gray-400 border-l-2 border-amber-500">
+                  <strong>Tip:</strong> The installer creates scheduled tasks / systemd services for automatic startup.
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="flex gap-4">
+              <div class="flex-shrink-0">
+                <div class="flex items-center justify-center h-10 w-10 rounded-full bg-emerald-500/20 border border-emerald-500">
+                  <span class="text-emerald-400 font-bold">3</span>
+                </div>
+              </div>
+              <div>
+                <h3 class="font-bold text-emerald-300 mb-2">Collect Generated Credentials</h3>
+                <p class="text-gray-400 text-sm mb-3">
+                  After installation, check these files for your credentials:
+                </p>
+                <div class="bg-gray-900/50 rounded p-3 text-xs font-mono text-gray-300 mb-3 space-y-1">
+                  <div><strong>Windows:</strong> C:\Users\Public\Documents\firewall_1\user_id.txt</div>
+                  <div style="margin-top: 8px;"><strong>Windows:</strong> C:\Users\Public\Documents\firewall_1\user_token.txt</div>
+                  <div style="margin-top: 8px;"><strong>Linux:</strong> ~/firewall_agent/user_id.txt</div>
+                  <div style="margin-top: 8px;"><strong>Linux:</strong> ~/firewall_agent/user_token.txt</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="flex gap-4">
+              <div class="flex-shrink-0">
+                <div class="flex items-center justify-center h-10 w-10 rounded-full bg-emerald-500/20 border border-emerald-500">
+                  <span class="text-emerald-400 font-bold">4</span>
+                </div>
+              </div>
+              <div>
+                <h3 class="font-bold text-emerald-300 mb-2">Sign In Here</h3>
+                <p class="text-gray-400 text-sm mb-3">
+                  Go to the <strong>Agents tab</strong>, paste your User ID and Token, and click Sign In.
+                </p>
+                <p class="text-gray-400 text-sm">
+                  Your agent should appear in the list within seconds. If you don't see it, check the agent logs.
+                </p>
+              </div>
+            </div>
+
+            <!-- Step 5 -->
+            <div class="flex gap-4">
+              <div class="flex-shrink-0">
+                <div class="flex items-center justify-center h-10 w-10 rounded-full bg-emerald-500/20 border border-emerald-500">
+                  <span class="text-emerald-400 font-bold">5</span>
+                </div>
+              </div>
+              <div>
+                <h3 class="font-bold text-emerald-300 mb-2">Control Firewall</h3>
+                <p class="text-gray-400 text-sm mb-3">
+                  Once signed in, click <strong>ACTIVATE</strong> or <strong>DEACTIVATE</strong> to control the firewall on your agent.
+                </p>
+                <div class="bg-gray-900/50 rounded p-3 text-xs text-gray-400 border-l-2 border-cyan-500">
+                  Rules are loaded from your centralized firewall policy file (hybrid_firewall.json). Changes take effect instantly across all agents.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Troubleshooting -->
+        <div class="glass rounded-xl p-8 border border-gray-700">
+          <h2 class="text-lg font-bold mb-6 flex items-center gap-2">
+            <i class="fas fa-wrench text-yellow-400"></i>Troubleshooting
+          </h2>
+          <div class="space-y-4">
+            <details class="bg-gray-900/50 rounded-lg p-4 cursor-pointer">
+              <summary class="font-bold text-gray-300 flex items-center gap-2">
+                <i class="fas fa-chevron-right"></i>Agent doesn't appear after installation
+              </summary>
+              <div class="mt-3 text-sm text-gray-400 space-y-2">
+                <p>1. Check that the installer completed without errors</p>
+                <p>2. Verify the backend URL is correct (http://10.144.164.253:5000)</p>
+                <p>3. Check internet connectivity from the agent machine</p>
+                <p>4. Review agent logs for error messages</p>
+                <p><strong>Windows logs:</strong> C:\Users\Public\Documents\firewall_1\agent.log</p>
+              </div>
+            </details>
+
+            <details class="bg-gray-900/50 rounded-lg p-4 cursor-pointer">
+              <summary class="font-bold text-gray-300 flex items-center gap-2">
+                <i class="fas fa-chevron-right"></i>Installation command fails
+              </summary>
+              <div class="mt-3 text-sm text-gray-400 space-y-2">
+                <p><strong>Windows:</strong> Ensure you're running PowerShell as Administrator</p>
+                <p><strong>Windows:</strong> Set execution policy if needed: Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope CurrentUser</p>
+                <p><strong>Linux:</strong> Use sudo for system-wide installation or install in home directory</p>
+                <p>Contact your system administrator if you lack permissions</p>
+              </div>
+            </details>
+
+            <details class="bg-gray-900/50 rounded-lg p-4 cursor-pointer">
+              <summary class="font-bold text-gray-300 flex items-center gap-2">
+                <i class="fas fa-chevron-right"></i>How to find your credentials
+              </summary>
+              <div class="mt-3 text-sm text-gray-400 space-y-2">
+                <p><strong>Windows:</strong> Run this in PowerShell:</p>
+                <div class="bg-gray-900 p-2 rounded font-mono text-xs">$env:HOMEPATH\firewall_1\user_id.txt</div>
+                <p style="margin-top: 8px;"><strong>Linux:</strong> Run this in Terminal:</p>
+                <div class="bg-gray-900 p-2 rounded font-mono text-xs">cat ~/firewall_agent/user_id.txt</div>
+              </div>
+            </details>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADMIN TAB -->
+    <div id="admin-tab" class="tab-content hidden">
+      <div class="glass rounded-xl p-8 border border-gray-700">
+        <h2 class="text-lg font-bold mb-6 flex items-center gap-2">
+          <i class="fas fa-shield-alt text-red-400"></i>Admin Panel
+        </h2>
+        <p class="text-gray-400 mb-6">Manage all users and agents (admin access only)</p>
+        
+        <button id="admin-load-users" class="gradient-btn px-6 py-3 rounded-lg font-semibold text-gray-900 mb-6">
+          <i class="fas fa-sync mr-2"></i>Load All Users
+        </button>
+
+        <div id="admin-users-list" class="space-y-4"></div>
+        <div id="no-admin-access" class="text-center text-gray-500 py-8">
+          Admin access required. Sign in with admin credentials.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="fixed top-6 right-6 z-50 space-y-3"></div>
+
+  <script>
+    const API_BASE = "http://10.144.164.253:5000";
+    let USER_ID = localStorage.getItem('user_id') || null;
+    let USER_TOKEN = localStorage.getItem('user_token') || null;
+
+    // Toast notification
+    function toast(msg, type = 'info') {
+      const container = document.getElementById('toast-container');
+      const el = document.createElement('div');
+      el.className = `glass rounded-lg p-4 border toast ${
+        type === 'error' ? 'border-red-500/50 text-red-300' : 'border-emerald-500/50 text-emerald-300'
+      }`;
+      el.innerHTML = `<i class="fas fa-${type === 'error' ? 'exclamation-circle' : 'check-circle'} mr-2"></i>${msg}`;
+      container.appendChild(el);
+      setTimeout(() => el.remove(), 3000);
+    }
+
+    // Tab switching
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('tab-active'));
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
+        btn.classList.add('tab-active');
+        document.getElementById(btn.dataset.tab + '-tab').classList.remove('hidden');
+      });
+    });
+
+    // Auth
+    document.getElementById('login-btn').addEventListener('click', () => {
+      const u = document.getElementById('input-user').value.trim();
+      const t = document.getElementById('input-token').value.trim();
+      if (!u || !t) { toast('Please enter both User ID and Token', 'error'); return; }
+      USER_ID = u;
+      USER_TOKEN = t;
+      localStorage.setItem('user_id', u);
+      localStorage.setItem('user_token', t);
+      updateAuthUI();
+      refresh();
+      toast('Signed in successfully');
+    });
+
+    document.getElementById('logout-btn').addEventListener('click', () => {
+      USER_ID = null;
+      USER_TOKEN = null;
+      localStorage.removeItem('user_id');
+      localStorage.removeItem('user_token');
+      updateAuthUI();
+      refresh();
+      toast('Signed out');
+    });
+
+    document.getElementById('clear-btn').addEventListener('click', () => {
+      document.getElementById('input-user').value = '';
+      document.getElementById('input-token').value = '';
+    });
+
+    function updateAuthUI() {
+      const authStatus = document.getElementById('auth-status');
+      const logoutBtn = document.getElementById('logout-btn');
+      const authSection = document.getElementById('auth-section');
+      const noAuthMsg = document.getElementById('no-auth-message');
+      
+      if (USER_ID && USER_TOKEN) {
+        authStatus.textContent = `Signed in as ${USER_ID}`;
+        logoutBtn.classList.remove('hidden');
+        authSection.classList.add('hidden');
+        noAuthMsg.classList.add('hidden');
+      } else {
+        authStatus.textContent = 'Not authenticated';
+        logoutBtn.classList.add('hidden');
+        authSection.classList.remove('hidden');
+        noAuthMsg.classList.remove('hidden');
+      }
+    }
+
+    // Installation
+    const osInput = document.querySelector('input[name="pref_fw"]:checked');
+    document.querySelectorAll('input[name="pref_fw"]').forEach(r => r.addEventListener('change', updateCommandDisplay));
+    
+    function updateCommandDisplay() {
+      const os = document.querySelector('input[name="pref_fw"]:checked').value;
+      const cmdBox = document.getElementById('command-box');
+      if (os === 'windows') {
+        cmdBox.textContent = 'Set-ExecutionPolicy Bypass -Scope Process -Force; .\\install_firewall_agent_cross.ps1 -BackendUrl "http://10.144.164.253:5000"';
+      } else {
+        cmdBox.textContent = 'python3 install_firewall_agent.py --backend "http://10.144.164.253:5000"';
+      }
+    }
+
+    document.getElementById('show-instructions').addEventListener('click', () => {
+      document.getElementById('commands-display').classList.toggle('hidden');
+      updateCommandDisplay();
+    });
+
+    document.getElementById('copy-command').addEventListener('click', () => {
+      const cmd = document.getElementById('command-box').textContent;
+      navigator.clipboard.writeText(cmd);
+      toast('Command copied to clipboard');
+    });
+
+    // Download installer
+    document.getElementById('download-installer').addEventListener('click', () => {
+      const os = document.querySelector('input[name="pref_fw"]:checked').value;
+      window.location = `${API_BASE}/api/public/installer/zip?os=${encodeURIComponent(os)}`;
+      toast('Download started');
+    });
+
+    // Admin panel
+    document.getElementById('admin-load-users').addEventListener('click', async () => {
+      if (!USER_ID || !USER_TOKEN) { toast('Sign in first', 'error'); return; }
+      try {
+        const res = await fetch(`${API_BASE}/api/admin/users?user_id=${encodeURIComponent(USER_ID)}&token=${encodeURIComponent(USER_TOKEN)}`);
+        if (!res.ok) { toast('Admin access denied', 'error'); return; }
+        const users = await res.json();
+        const container = document.getElementById('admin-users-list');
+        container.innerHTML = users.map(u => `
+          <div class="glass rounded-lg p-4 border border-gray-700">
+            <div class="flex justify-between items-center">
+              <div>
+                <div class="font-bold">${u.user_id}</div>
+                <div class="text-xs text-gray-400">${u.last_action || '—'}</div>
+              </div>
+              <button onclick="deleteUser('${u.user_id}')" class="danger-btn px-4 py-2 rounded text-sm text-white">Delete</button>
+            </div>
+          </div>
+        `).join('');
+      } catch (e) { toast('Failed to load users', 'error'); }
+    });
+
+    // Refresh agents
+    async function refresh() {
+      if (!USER_ID || !USER_TOKEN) return;
+      try {
+        const res = await fetch(`${API_BASE}/api/user/agents?user_id=${encodeURIComponent(USER_ID)}&token=${encodeURIComponent(USER_TOKEN)}`);
+        if (!res.ok) { toast('Failed to fetch agents', 'error'); return; }
+        const agents = await res.json();
+        const list = document.getElementById('agents-list');
+        if (!agents.length) { list.innerHTML = '<div class="text-center text-gray-500 py-8">No agents connected</div>'; return; }
+        
+        list.innerHTML = agents.map(a => `
+          <div class="glass rounded-xl p-6 border border-gray-700 card-hover">
+            <div class="flex justify-between items-start mb-4">
+              <div class="flex items-center gap-3">
+                <div class="w-3 h-3 rounded-full ${a.connected ? 'bg-emerald-500 pulse-dot' : 'bg-red-500/50'}"></div>
+                <div>
+                  <div class="font-bold">${a.agent_id.substring(0, 12)}...</div>
+                  <div class="text-xs text-gray-400">${a.os} • Last: ${a.last_heartbeat ? new Date(a.last_heartbeat * 1000).toLocaleTimeString() : '—'}</div>
+                </div>
+              </div>
+              <div class="text-right">
+                <div class="text-xs text-gray-400">Firewall</div>
+                <div class="text-2xl font-bold ${a.firewall === 'ACTIVE' ? 'status-active' : 'status-inactive'}">
+                  ${a.firewall}
+                </div>
+              </div>
+            </div>
+            <button onclick="toggleFirewall('${a.agent_id}', '${a.firewall}')" 
+              class="${a.firewall === 'ACTIVE' ? 'danger-btn' : 'gradient-btn'} w-full py-3 rounded-lg font-semibold text-gray-900 flex items-center justify-center gap-2">
+              <i class="fas fa-${a.firewall === 'ACTIVE' ? 'power-off' : 'check'}"></i>
+              ${a.firewall === 'ACTIVE' ? 'DEACTIVATE' : 'ACTIVATE'}
+            </button>
+          </div>
+        `).join('');
+      } catch (e) { console.error(e); }
+    }
+
+    async function toggleFirewall(agentId, state) {
+      const cmd = state === 'ACTIVE' ? 'DEACTIVATE' : 'ACTIVATE';
+      if (!confirm(`Send ${cmd} command to ${agentId.substring(0, 8)}?`)) return;
+      try {
+        const res = await fetch(`${API_BASE}/api/user/firewall`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ user_id: USER_ID, token: USER_TOKEN, agent_id: agentId, cmd: cmd })
+        });
+        if (res.ok) { toast('Command sent'); setTimeout(refresh, 800); } else { toast('Failed', 'error'); }
+      } catch (e) { toast('Network error', 'error'); }
+    }
+
+    async function deleteUser(userId) {
+      if (!confirm(`Delete user ${userId}?`)) return;
+      try {
+        const res = await fetch(`${API_BASE}/api/admin/users/delete`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ user_id: USER_ID, token: USER_TOKEN, target_user: userId })
+        });
+        if (res.ok) { toast('User deleted'); document.getElementById('admin-load-users').click(); } else { toast('Failed', 'error'); }
+      } catch (e) { toast('Error', 'error'); }
+    }
+
+    // Initialize
+    updateAuthUI();
+    refresh();
+    updateCommandDisplay();
+    setInterval(refresh, 5000);
+  </script>
+</body>
+</html>

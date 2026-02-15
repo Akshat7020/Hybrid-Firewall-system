@@ -1,0 +1,538 @@
+{
+  "admin": {
+    "agents": {},
+    "token": "eaade08d39bfd57bff2b9a605a46032d"
+  },
+  "aksha@LAPTOP-I1LQJ02D": {
+    "agents": {
+      "a3cd46ab-7013-477e-bebb-735abc93c79c": {
+        "os": "windows",
+        "firewall": "INACTIVE",
+        "connected": true,
+        "last_heartbeat": 1770887971.8979294,
+        "last_toggle": 1770887604.4168458,
+        "pending_cmd": null,
+        "secret": "b36029c4eeea1b51958eb87153829561",
+        "last_actor": "aksha@LAPTOP-I1LQJ02D"
+      }
+    },
+    "token": "96ddbb2b9531b9d1a861689cb91dc017",
+    "last_action": "DEACTIVATE a3cd46ab-7013-477e-bebb-735abc93c79c",
+    "last_activated": 1770887565.7972045,
+    "activity_log": [
+      {
+        "ts": 1769849852.9428325,
+        "actor": "aksha@LAPTOP-I1LQJ02D",
+        "cmd": "ACTIVATE",
+        "agent": "a3cd46ab-7013-477e-bebb-735abc93c79c"
+      },
+      {
+        "ts": 1769849893.5404992,
+        "actor": "aksha@LAPTOP-I1LQJ02D",
+        "cmd": "DEACTIVATE",
+        "agent": "a3cd46ab-7013-477e-bebb-735abc93c79c"
+      },
+      {
+        "ts": 1769850441.945635,
+        "actor": "aksha@LAPTOP-I1LQJ02D",
+        "cmd": "ACTIVATE",
+        "agent": "a3cd46ab-7013-477e-bebb-735abc93c79c"
+      },
+      {
+        "ts": 1769850573.4476993,
+        "actor": "aksha@LAPTOP-I1LQJ02D",
+        "cmd": "DEACTIVATE",
+        "agent": "a3cd46ab-7013-477e-bebb-735abc93c79c"
+      },
+      {
+        "ts": 1769850636.1045854,
+        "actor": "aksha@LAPTOP-I1LQJ02D",
+        "cmd": "ACTIVATE",
+        "agent": "a3cd46ab-7013-477e-bebb-735abc93c79c"
+      },
+      {
+        "ts": 1769850694.3144407,
+        "actor": "aksha@LAPTOP-I1LQJ02D",
+        "cmd": "DEACTIVATE",
+        "agent": "a3cd46ab-7013-477e-bebb-735abc93c79c"
+      },
+      {
+        "ts": 1769852137.6395857,
+        "actor": "aksha@LAPTOP-I1LQJ02D",
+        "cmd": "ACTIVATE",
+        "agent": "a3cd46ab-7013-477e-bebb-735abc93c79c"
+      },
+      {
+        "ts": 1769852556.4266207,
+        "actor": "aksha@LAPTOP-I1LQJ02D",
+        "cmd": "DEACTIVATE",
+        "agent": "a3cd46ab-7013-477e-bebb-735abc93c79c"
+      },
+      {
+        "ts": 1769852580.258157,
+        "actor": "aksha@LAPTOP-I1LQJ02D",
+        "cmd": "ACTIVATE",
+        "agent": "a3cd46ab-7013-477e-bebb-735abc93c79c"
+      },
+      {
+        "ts": 1769852859.3263044,
+        "actor": "aksha@LAPTOP-I1LQJ02D",
+        "cmd": "DEACTIVATE",
+        "agent": "a3cd46ab-7013-477e-bebb-735abc93c79c"
+      },
+      {
+        "ts": 1769859063.6390328,
+        "actor": "aksha@LAPTOP-I1LQJ02D",
+        "cmd": "ACTIVATE",
+        "agent": "a3cd46ab-7013-477e-bebb-735abc93c79c"
+      },
+      {
+        "ts": 1769859219.5287085,
+        "actor": "aksha@LAPTOP-I1LQJ02D",
+        "cmd": "DEACTIVATE",
+        "agent": "a3cd46ab-7013-477e-bebb-735abc93c79c"
+      },
+      {
+        "ts": 1769878551.0943692,
+        "actor": "aksha@LAPTOP-I1LQJ02D",
+        "cmd": "ACTIVATE",
+        "agent": "a3cd46ab-7013-477e-bebb-735abc93c79c"
+      },
+      {
+        "ts": 1769878587.8897815,
+        "actor": "aksha@LAPTOP-I1LQJ02D",
+        "cmd": "ACTIVATE",
+        "agent": "a3cd46ab-7013-477e-bebb-735abc93c79c"
+      },
+      {
+        "ts": 1769878619.2420332,
+        "actor": "aksha@LAPTOP-I1LQJ02D",
+        "cmd": "ACTIVATE",
+        "agent": "a3cd46ab-7013-477e-bebb-735abc93c79c"
+      },
+      {
+        "ts": 1769879066.4406106,
+        "actor": "aksha@LAPTOP-I1LQJ02D",
+        "cmd": "ACTIVATE",
+        "agent": "a3cd46ab-7013-477e-bebb-735abc93c79c"
+      },
+      {
+        "ts": 1769879258.1641576,
+        "actor": "aksha@LAPTOP-I1LQJ02D",
+        "cmd": "DEACTIVATE",
+        "agent": "a3cd46ab-7013-477e-bebb-735abc93c79c"
+      },
+      {
+        "ts": 1769946295.200709,
+        "actor": "aksha@LAPTOP-I1LQJ02D",
+        "cmd": "ACTIVATE",
+        "agent": "a3cd46ab-7013-477e-bebb-735abc93c79c"
+      },
+      {
+        "ts": 1769946330.408053,
+        "actor": "aksha@LAPTOP-I1LQJ02D",
+        "cmd": "ACTIVATE",
+        "agent": "a3cd46ab-7013-477e-bebb-735abc93c79c"
+      },
+      {
+        "ts": 1769946439.5629408,
+        "actor": "aksha@LAPTOP-I1LQJ02D",
+        "cmd": "ACTIVATE",
+        "agent": "a3cd46ab-7013-477e-bebb-735abc93c79c"
+      },
+      {
+        "ts": 1769946463.2894316,
+        "actor": "aksha@LAPTOP-I1LQJ02D",
+        "cmd": "ACTIVATE",
+        "agent": "a3cd46ab-7013-477e-bebb-735abc93c79c"
+      },
+      {
+        "ts": 1769946700.4344683,
+        "actor": "aksha@LAPTOP-I1LQJ02D",
+        "cmd": "DEACTIVATE",
+        "agent": "a3cd46ab-7013-477e-bebb-735abc93c79c"
+      },
+      {
+        "ts": 1769946723.2606444,
+        "actor": "aksha@LAPTOP-I1LQJ02D",
+        "cmd": "ACTIVATE",
+        "agent": "a3cd46ab-7013-477e-bebb-735abc93c79c"
+      },
+      {
+        "ts": 1769946737.5305288,
+        "actor": "aksha@LAPTOP-I1LQJ02D",
+        "cmd": "DEACTIVATE",
+        "agent": "a3cd46ab-7013-477e-bebb-735abc93c79c"
+      },
+      {
+        "ts": 1769959262.802965,
+        "actor": "aksha@LAPTOP-I1LQJ02D",
+        "cmd": "ACTIVATE",
+        "agent": "a3cd46ab-7013-477e-bebb-735abc93c79c"
+      },
+      {
+        "ts": 1769959285.6549668,
+        "actor": "aksha@LAPTOP-I1LQJ02D",
+        "cmd": "DEACTIVATE",
+        "agent": "a3cd46ab-7013-477e-bebb-735abc93c79c"
+      },
+      {
+        "ts": 1770002921.8185856,
+        "actor": "aksha@LAPTOP-I1LQJ02D",
+        "cmd": "ACTIVATE",
+        "agent": "a3cd46ab-7013-477e-bebb-735abc93c79c"
+      },
+      {
+        "ts": 1770002998.0594864,
+        "actor": "aksha@LAPTOP-I1LQJ02D",
+        "cmd": "DEACTIVATE",
+        "agent": "a3cd46ab-7013-477e-bebb-735abc93c79c"
+      },
+      {
+        "ts": 1770301794.0540543,
+        "actor": "aksha@LAPTOP-I1LQJ02D",
+        "cmd": "ACTIVATE",
+        "agent": "a3cd46ab-7013-477e-bebb-735abc93c79c"
+      },
+      {
+        "ts": 1770301842.0585856,
+        "actor": "aksha@LAPTOP-I1LQJ02D",
+        "cmd": "DEACTIVATE",
+        "agent": "a3cd46ab-7013-477e-bebb-735abc93c79c"
+      },
+      {
+        "ts": 1770610532.4656954,
+        "actor": "aksha@LAPTOP-I1LQJ02D",
+        "cmd": "ACTIVATE",
+        "agent": "a3cd46ab-7013-477e-bebb-735abc93c79c"
+      },
+      {
+        "ts": 1770610606.7075024,
+        "actor": "aksha@LAPTOP-I1LQJ02D",
+        "cmd": "DEACTIVATE",
+        "agent": "a3cd46ab-7013-477e-bebb-735abc93c79c"
+      },
+      {
+        "ts": 1770887456.8293128,
+        "actor": "aksha@LAPTOP-I1LQJ02D",
+        "cmd": "ACTIVATE",
+        "agent": "a3cd46ab-7013-477e-bebb-735abc93c79c"
+      },
+      {
+        "ts": 1770887565.7972045,
+        "actor": "aksha@LAPTOP-I1LQJ02D",
+        "cmd": "ACTIVATE",
+        "agent": "a3cd46ab-7013-477e-bebb-735abc93c79c"
+      },
+      {
+        "ts": 1770887604.4168458,
+        "actor": "aksha@LAPTOP-I1LQJ02D",
+        "cmd": "DEACTIVATE",
+        "agent": "a3cd46ab-7013-477e-bebb-735abc93c79c"
+      }
+    ]
+  },
+  "root": {
+    "agents": {
+      "0e0d44e5-6b1e-44d5-8c48-06f18b183bf3": {
+        "os": "linux",
+        "firewall": "INACTIVE",
+        "connected": true,
+        "last_heartbeat": 1770614097.7138934,
+        "last_toggle": 1770021527.6452572,
+        "pending_cmd": null,
+        "secret": "0653304148edecf47ece9fc1f0396e3a",
+        "last_actor": "root"
+      }
+    },
+    "token": "a39e64b15c5436fae1c98ed18a148ba3",
+    "last_action": "DEACTIVATE 0e0d44e5-6b1e-44d5-8c48-06f18b183bf3",
+    "last_activated": 1770021446.5198355,
+    "activity_log": [
+      {
+        "ts": 1769863026.1454601,
+        "actor": "root",
+        "cmd": "ACTIVATE",
+        "agent": "10038b52-051e-4e57-9947-c6bfafe097ff"
+      },
+      {
+        "ts": 1769863051.5241058,
+        "actor": "root",
+        "cmd": "ACTIVATE",
+        "agent": "10038b52-051e-4e57-9947-c6bfafe097ff"
+      },
+      {
+        "ts": 1769863307.7091608,
+        "actor": "root",
+        "cmd": "ACTIVATE",
+        "agent": "10038b52-051e-4e57-9947-c6bfafe097ff"
+      },
+      {
+        "ts": 1769864149.3461118,
+        "actor": "root",
+        "cmd": "ACTIVATE",
+        "agent": "2468eb5f-608d-4c91-ada8-9f6e0a691939"
+      },
+      {
+        "ts": 1769864381.7160075,
+        "actor": "root",
+        "cmd": "ACTIVATE",
+        "agent": "2468eb5f-608d-4c91-ada8-9f6e0a691939"
+      },
+      {
+        "ts": 1769864519.364067,
+        "actor": "root",
+        "cmd": "ACTIVATE",
+        "agent": "2468eb5f-608d-4c91-ada8-9f6e0a691939"
+      },
+      {
+        "ts": 1769864967.952098,
+        "actor": "root",
+        "cmd": "ACTIVATE",
+        "agent": "df605cff-0ae0-4762-b943-55cd60c0c91f"
+      },
+      {
+        "ts": 1769865415.3526177,
+        "actor": "root",
+        "cmd": "ACTIVATE",
+        "agent": "53f244be-b79e-496e-bf6a-9f1e47d4fb8c"
+      },
+      {
+        "ts": 1769865578.3737602,
+        "actor": "root",
+        "cmd": "ACTIVATE",
+        "agent": "53f244be-b79e-496e-bf6a-9f1e47d4fb8c"
+      },
+      {
+        "ts": 1769943436.5766082,
+        "actor": "root",
+        "cmd": "ACTIVATE",
+        "agent": "53f244be-b79e-496e-bf6a-9f1e47d4fb8c"
+      },
+      {
+        "ts": 1769947141.6989357,
+        "actor": "root",
+        "cmd": "ACTIVATE",
+        "agent": "85837dec-a19b-46c9-b21e-2713e59f0431"
+      },
+      {
+        "ts": 1769947182.7940307,
+        "actor": "root",
+        "cmd": "ACTIVATE",
+        "agent": "85837dec-a19b-46c9-b21e-2713e59f0431"
+      },
+      {
+        "ts": 1769957276.1295807,
+        "actor": "root",
+        "cmd": "ACTIVATE",
+        "agent": "1e5d8e80-9c48-4e4a-be88-afd9ef2053ec"
+      },
+      {
+        "ts": 1769957322.1478093,
+        "actor": "root",
+        "cmd": "ACTIVATE",
+        "agent": "1e5d8e80-9c48-4e4a-be88-afd9ef2053ec"
+      },
+      {
+        "ts": 1769958187.761537,
+        "actor": "root",
+        "cmd": "DEACTIVATE",
+        "agent": "1e5d8e80-9c48-4e4a-be88-afd9ef2053ec"
+      },
+      {
+        "ts": 1769958210.635155,
+        "actor": "root",
+        "cmd": "DEACTIVATE",
+        "agent": "1e5d8e80-9c48-4e4a-be88-afd9ef2053ec"
+      },
+      {
+        "ts": 1769958233.672112,
+        "actor": "root",
+        "cmd": "DEACTIVATE",
+        "agent": "1e5d8e80-9c48-4e4a-be88-afd9ef2053ec"
+      },
+      {
+        "ts": 1769958363.3580456,
+        "actor": "root",
+        "cmd": "DEACTIVATE",
+        "agent": "1e5d8e80-9c48-4e4a-be88-afd9ef2053ec"
+      },
+      {
+        "ts": 1769958401.6272953,
+        "actor": "root",
+        "cmd": "DEACTIVATE",
+        "agent": "1e5d8e80-9c48-4e4a-be88-afd9ef2053ec"
+      },
+      {
+        "ts": 1769958801.4651442,
+        "actor": "root",
+        "cmd": "DEACTIVATE",
+        "agent": "3f42c841-b87e-4105-afb3-9e66a33ba0ff"
+      },
+      {
+        "ts": 1769958849.5351903,
+        "actor": "root",
+        "cmd": "DEACTIVATE",
+        "agent": "3f42c841-b87e-4105-afb3-9e66a33ba0ff"
+      },
+      {
+        "ts": 1769959460.5821707,
+        "actor": "root",
+        "cmd": "DEACTIVATE",
+        "agent": "3f42c841-b87e-4105-afb3-9e66a33ba0ff"
+      },
+      {
+        "ts": 1769959492.717389,
+        "actor": "root",
+        "cmd": "DEACTIVATE",
+        "agent": "3f42c841-b87e-4105-afb3-9e66a33ba0ff"
+      },
+      {
+        "ts": 1769960525.5974338,
+        "actor": "root",
+        "cmd": "ACTIVATE",
+        "agent": "14fb0b6f-7391-4371-a921-c23a0f647a30"
+      },
+      {
+        "ts": 1769961231.8006623,
+        "actor": "root",
+        "cmd": "ACTIVATE",
+        "agent": "0e0d44e5-6b1e-44d5-8c48-06f18b183bf3"
+      },
+      {
+        "ts": 1769961303.4442427,
+        "actor": "root",
+        "cmd": "DEACTIVATE",
+        "agent": "0e0d44e5-6b1e-44d5-8c48-06f18b183bf3"
+      },
+      {
+        "ts": 1769961421.241857,
+        "actor": "root",
+        "cmd": "ACTIVATE",
+        "agent": "0e0d44e5-6b1e-44d5-8c48-06f18b183bf3"
+      },
+      {
+        "ts": 1769961489.2388535,
+        "actor": "root",
+        "cmd": "DEACTIVATE",
+        "agent": "0e0d44e5-6b1e-44d5-8c48-06f18b183bf3"
+      },
+      {
+        "ts": 1770019438.5174968,
+        "actor": "root",
+        "cmd": "ACTIVATE",
+        "agent": "3a56130c-3bef-4a83-8ea5-dc5dadc571ae"
+      },
+      {
+        "ts": 1770019547.864182,
+        "actor": "root",
+        "cmd": "DEACTIVATE",
+        "agent": "3a56130c-3bef-4a83-8ea5-dc5dadc571ae"
+      },
+      {
+        "ts": 1770019890.5012681,
+        "actor": "root",
+        "cmd": "ACTIVATE",
+        "agent": "3a56130c-3bef-4a83-8ea5-dc5dadc571ae"
+      },
+      {
+        "ts": 1770020017.4701078,
+        "actor": "root",
+        "cmd": "DEACTIVATE",
+        "agent": "3a56130c-3bef-4a83-8ea5-dc5dadc571ae"
+      },
+      {
+        "ts": 1770021394.8548079,
+        "actor": "root",
+        "cmd": "ACTIVATE",
+        "agent": "0e0d44e5-6b1e-44d5-8c48-06f18b183bf3"
+      },
+      {
+        "ts": 1770021446.5198355,
+        "actor": "root",
+        "cmd": "ACTIVATE",
+        "agent": "3a56130c-3bef-4a83-8ea5-dc5dadc571ae"
+      },
+      {
+        "ts": 1770021527.6452572,
+        "actor": "root",
+        "cmd": "DEACTIVATE",
+        "agent": "0e0d44e5-6b1e-44d5-8c48-06f18b183bf3"
+      }
+    ]
+  },
+  "ASUS@DESKTOP-D6OLCVH": {
+    "agents": {
+      "f1f2f1ad-d476-4956-91e8-d32c22a89b14": {
+        "os": "windows",
+        "firewall": "INACTIVE",
+        "connected": true,
+        "last_heartbeat": 1770021873.2595723,
+        "last_toggle": 1770021519.4545107,
+        "pending_cmd": null,
+        "secret": "10f376de1f0442295290c4c54a873b8b",
+        "last_actor": "ASUS@DESKTOP-D6OLCVH"
+      }
+    },
+    "token": "1d6b6859cc6ad214d4bd88a963e4a730",
+    "last_action": "DEACTIVATE f1f2f1ad-d476-4956-91e8-d32c22a89b14",
+    "last_activated": 1770021369.9506526,
+    "activity_log": [
+      {
+        "ts": 1770020893.2633035,
+        "actor": "ASUS@DESKTOP-D6OLCVH",
+        "cmd": "ACTIVATE",
+        "agent": "f1f2f1ad-d476-4956-91e8-d32c22a89b14"
+      },
+      {
+        "ts": 1770021230.8462093,
+        "actor": "ASUS@DESKTOP-D6OLCVH",
+        "cmd": "DEACTIVATE",
+        "agent": "f1f2f1ad-d476-4956-91e8-d32c22a89b14"
+      },
+      {
+        "ts": 1770021369.9506526,
+        "actor": "ASUS@DESKTOP-D6OLCVH",
+        "cmd": "ACTIVATE",
+        "agent": "f1f2f1ad-d476-4956-91e8-d32c22a89b14"
+      },
+      {
+        "ts": 1770021519.4545107,
+        "actor": "ASUS@DESKTOP-D6OLCVH",
+        "cmd": "DEACTIVATE",
+        "agent": "f1f2f1ad-d476-4956-91e8-d32c22a89b14"
+      }
+    ]
+  },
+  "anxsh@7VEN": {
+    "agents": {
+      "e62b206d-9386-4893-80ca-303283736f6b": {
+        "os": "windows",
+        "firewall": "INACTIVE",
+        "connected": true,
+        "last_heartbeat": 1770021778.5896082,
+        "last_toggle": 1770021514.9435372,
+        "pending_cmd": null,
+        "secret": "68c02d3c541f73f0817fe95c22ec832a",
+        "last_actor": "anxsh@7VEN"
+      }
+    },
+    "token": "74a9de763be242c4bb92b0413ee0c538",
+    "last_action": "DEACTIVATE e62b206d-9386-4893-80ca-303283736f6b",
+    "last_activated": 1770021369.1276507,
+    "activity_log": [
+      {
+        "ts": 1770021369.1276507,
+        "actor": "anxsh@7VEN",
+        "cmd": "ACTIVATE",
+        "agent": "e62b206d-9386-4893-80ca-303283736f6b"
+      },
+      {
+        "ts": 1770021514.9435372,
+        "actor": "anxsh@7VEN",
+        "cmd": "DEACTIVATE",
+        "agent": "e62b206d-9386-4893-80ca-303283736f6b"
+      }
+    ]
+  }
+}
